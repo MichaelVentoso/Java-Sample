@@ -16,7 +16,7 @@ import edu.princeton.cs.algs4.*;
 
 public class Stack2<Item> implements Iterable<Item> {
     private Node<Item> first;     // top Node of the stack
-    private int n;                // store number of items on stack
+    private int numItems;                // store number of items on stack
 
     // Helper linked list class
     // Each node contains one item and the link to the next node
@@ -28,7 +28,7 @@ public class Stack2<Item> implements Iterable<Item> {
     // Create empty stack
     public Stack2() {
         first = null;
-        n = 0;
+        numItems = 0;
     }
 
     // Returns true if empty, false if not empty
@@ -38,7 +38,7 @@ public class Stack2<Item> implements Iterable<Item> {
 
     // Returns number of items on the stack
     public int size() {
-        return n;
+        return numItems;
     }
 
     // Adds an item to the stack
@@ -47,7 +47,7 @@ public class Stack2<Item> implements Iterable<Item> {
         first = new Node<Item>();
         first.item = item;
         first.next = oldfirst;
-        n++;
+        numItems++;
     }
     /*
     Removes an item from the top of the stack
@@ -58,7 +58,7 @@ public class Stack2<Item> implements Iterable<Item> {
         if (isEmpty()) throw new NoSuchElementException("Stack underflow");
         Item item = first.item;        // save item to return
         first = first.next;            // delete first node
-        n--;
+        numItems--;
         return item;                   // return the saved item
     }
 

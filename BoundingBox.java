@@ -23,9 +23,9 @@ import java.util.NoSuchElementException;
 
 public class BoundingBox {
 
-    private static int W;               // width of plot
-    private static int H;               // height of plot
-    private static int C;               // store number of points in BoundingBox
+    private static int width;               // width of plot
+    private static int height;               // height of plot
+    private static int numPoints;               // store number of points in BoundingBox
 
     //Sets initial maxes/mins
     private static double xmaxd = Double.MIN_VALUE;
@@ -41,9 +41,9 @@ public class BoundingBox {
 
     //Creates a new BoundingBox with given width and height
     public BoundingBox(int width, int height){
-        this.W = width;
-        this.H = height;
-        this.C = 0;
+        this.width = width;
+        this.height = height;
+        this.numPoints = 0;
     }
 
     //If only one parameter is given, the the plot is assumed to be a square of the given size.
@@ -64,7 +64,7 @@ public class BoundingBox {
     public void add(Point2D p){
         double xx = p.x();
         double yy = p.y();
-        C++;
+        this.numPoints++;
         if (xx > this.xmaxd){
             this.xmaxd = xx;
 
@@ -89,7 +89,7 @@ public class BoundingBox {
 
     //Returns number of points in the BoundingBox
     public int size(){
-        return C;
+        return this.numPoints;
     }
 
     //Returns the topmost point
@@ -126,6 +126,9 @@ public class BoundingBox {
     It then plots the points and draws the bounding box around them.
      */
     public static void main (String[] args){
+        int W = 800;
+        int H = 800;
+
         int N = Integer.parseInt(args[0]);
         BoundingBox box = new BoundingBox(Integer.parseInt(args[1]));
 

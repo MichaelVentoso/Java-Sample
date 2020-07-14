@@ -7,6 +7,7 @@
  *
  * MinPQMultiway is an implementation of a priority queue where the minimum value is easily accessible.
  * It differs from normal binary implementations in that the user can specify the number of child nodes per parent.
+ * We refer to a heap where each parent has D children as a D-Heap.
  * The underlying data structure is an array of keys, and there are several different constructors to allow flexibility
  * for the client.
  * One fundamental aspect of the MinPQMultiway is that the smallest key in the queue can be accessed in constant time;
@@ -20,14 +21,14 @@ import edu.princeton.cs.algs4.*;
 
 public class MinPQMultiway<Key> implements Iterable<Key> {
     private Key[] pq;                    // main data structure for storing items
-    private int n;                       // store current size of pq
+    private int sizePQ;                       // store current size of pq
     private Comparator<Key> comparator;  // comparator is optional
     private int D;                       // number of child nodes per parent
 
 
     public MinPQMultiway(int initCapacity, int childNum) {
         pq = (Key[]) new Object[initCapacity + 1];
-        n = 0;
+        sizePQ = 0;
         D = childNum;
     }
 
@@ -38,7 +39,7 @@ public class MinPQMultiway<Key> implements Iterable<Key> {
     public MinPQMultiway(int initCapacity, Comparator<Key> comparator, int childNum) {
         this.comparator = comparator;
         pq = (Key[]) new Object[initCapacity + 1];
-        n = 0;
+        sizePQ = 0;
         D = childNum;
     }
 
@@ -57,22 +58,22 @@ public class MinPQMultiway<Key> implements Iterable<Key> {
     // Creates MinPQMultiway from an existing array of keys
     public MinPQMultiway(Key[] keys, int childNum) {
         D = childNum;
-        n = keys.length;
+        sizePQ = keys.length;
         pq = (Key[]) new Object[keys.length + 1];
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < sizePQ; i++)
             pq[i+1] = keys[i];
-        for (int k = n/2; k >= 1; k--)
+        for (int k = sizePQ/2; k >= 1; k--)
             sink(k);
     }
 
     // Returns True if there are no keys in the queue, and False if there is at least one
     public boolean isEmpty() {
-        return n == 0;
+        return sizePQ == 0;
     }
 
     // Returns the number of keys on the queue
     public int size() {
-        return n;
+        return sizePQ;
     }
 
     // Returns the smallest key *in constant time*
@@ -83,9 +84,9 @@ public class MinPQMultiway<Key> implements Iterable<Key> {
 
     // Doubles the size of the underlying array if needed, and does not slow the runtime significantly in the long run
     private void resize(int capacity) {
-        assert capacity > n;
+        assert capacity > sizePQ;
         Key[] temp = (Key[]) new Object[capacity];
-        for (int i = 1; i <= n; i++) {
+        for (int i = 1; i <= sizePQ; i++) {
             temp[i] = pq[i];
         }
         pq = temp;
@@ -94,11 +95,11 @@ public class MinPQMultiway<Key> implements Iterable<Key> {
    // Adds a key and swims it to ensure the resulting PQ is a heap.
     public void insert(Key x) {
         // double size of array if necessary
-        if (n == pq.length - 1) resize(2 * pq.length);
+        if (sizePQ == pq.length - 1) resize(2 * pq.length);
 
         // add x, and percolate it up to maintain heap invariant
-        pq[++n] = x;
-        swim(n);
+        pq[++sizePQ] = x;
+        swim(sizePQ);
     }
 
     // Removes the smallest key
@@ -106,10 +107,10 @@ public class MinPQMultiway<Key> implements Iterable<Key> {
     public Key delMin() {
         if (isEmpty()) throw new NoSuchElementException("Priority queue underflow");
         Key min = pq[1];
-        exchange(1, n--);
+        exchange(1, sizePQ--);
         sink(1);
-        pq[n+1] = null;     // to avoid loitering and help with garbage collection
-        if ((n > 0) && (n == (pq.length - 1) / 4)) resize(pq.length / 2);
+        pq[sizePQ+1] = null;     // to avoid loitering and help with garbage collection
+        if ((sizePQ > 0) && (sizePQ == (pq.length - 1) / 4)) resize(pq.length / 2);
         return min;
     }
 
@@ -130,12 +131,12 @@ public class MinPQMultiway<Key> implements Iterable<Key> {
     before the exchange
      */
     private void sink(int k) {
-        while ((child(k) <= n) ) {
+        while ((child(k) <= sizePQ) ) {
             int j = child(k);
             int minIndex = j;
 
             for (int x = j; x < j + this.D; x++){
-                if (x>n){
+                if (x>sizePQ){
                     break;
                 }
                 if (greater(minIndex,x)){
@@ -198,7 +199,7 @@ public class MinPQMultiway<Key> implements Iterable<Key> {
         public HeapIterator() {
             if (comparator == null) copy = new MinPQ<Key>(size());
             else                    copy = new MinPQ<Key>(size(), comparator);
-            for (int i = 1; i <= n; i++)
+            for (int i = 1; i <= sizePQ; i++)
                 copy.insert(pq[i]);
         }
 
